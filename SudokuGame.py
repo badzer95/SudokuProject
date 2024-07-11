@@ -269,9 +269,11 @@ def AnswerChecker(ans:int, rowIndex:int, colIndex:int, solvedGrid:list[list[int]
     It also keeps track of the total number of mistakes.
     """
     if solvedGrid[rowIndex][colIndex] == ans:
+        print("Correct Answer :)")
         return True, mistakeCount
     else:
         mistakeCount += 1
+        print("Wrong Answer :(")
         return False, mistakeCount
 
 def AnsInputChecker(rowIndex:int, colIndex:int, solvedGrid: list[list[int]], mistakes:int) -> tuple[bool,int]:
@@ -284,9 +286,10 @@ def AnsInputChecker(rowIndex:int, colIndex:int, solvedGrid: list[list[int]], mis
             ans = int(input("Enter the number to input in the cell: "))
             assert ans >= 1
             assert ans <= 9
+            validity, mistakes = AnswerChecker(ans, rowIndex, colIndex, solvedGrid, mistakes)
             assert validity
         except AssertionError:
-            if ans == 0: #User choosing to cancel the input
+            if ans == 0 or not validity:
                 return 0, mistakes
             print("Assertion Error!")
             print("Your answer is wrong.")
@@ -298,7 +301,6 @@ def AnsInputChecker(rowIndex:int, colIndex:int, solvedGrid: list[list[int]], mis
             print("Value Error!")
             print("You must enter an integer between 0 and 9")
         else:
-            validity, mistakes = AnswerChecker(ans, rowIndex, colIndex, solvedGrid, mistakes)
             break
     return ans, mistakes
 
@@ -367,6 +369,8 @@ while True:
             ansNum, mistakes = AnsInputChecker(rowNum, colNum, solvedGrid, mistakes)
             GridChanger(unsolvedGrid, ansNum, rowNum, colNum)
         print()
+        GridBuilder(unsolvedGrid)
+        print()
         print("Grid Complete. Yay! :)")
         print()
     elif option == 2:
@@ -376,4 +380,5 @@ while True:
         break
     else:
         print("Coding Error!")
+        print("Check else statement, output script")
 print("Have a potato day!")
