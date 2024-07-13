@@ -1,3 +1,6 @@
+Please view this file from a note editor.
+There are spacing issues with the way this file is displayed on GitHub.
+
 How to Play Sudoku with the Script
 
 1. Run the Script
@@ -52,5 +55,6 @@ SudokuUnsolver: Removes numbers from the solved grid to create a playable puzzle
 GridBuilder: Prints the current state of the Sudoku grid.
 WinChecker: Checks if the player's grid matches the solved grid.
 GridInputChecker, AnsInputChecker, GridChanger: Handle user input and update the grid accordingly.
+
 Running the Game
 To play the game, simply run the script in a Python environment, follow the prompts, and enjoy solving the Sudoku puzzle!
