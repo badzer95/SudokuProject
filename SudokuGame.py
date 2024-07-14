@@ -1,5 +1,4 @@
 import random
-from copy import deepcopy
 
 def GridMaker() -> list[list[int]]:
     """
@@ -96,6 +95,20 @@ def SudokuMaker() -> list[list[int]]:
     SudokuSolver(grid)
     return grid
 
+def GridPreserver(grid:list[list[int]]) -> list[list[int]]:
+    """
+    An in-house replacement for deepcopy() from the copy module.
+    It does the same this as deepcopy() but it only works on
+    2D lists
+    """
+    gridCopy = list()
+    for row in grid:
+        rowCopy = list()
+        for num in row:
+            rowCopy += [num]
+        gridCopy += [rowCopy]
+    return gridCopy
+
 def SudokuUnsolver(grid:list[list[int]], limit:int = 48) -> list[list[int]]:
     """
     Takes in a fully solved 9x9 grid in nested list form.
@@ -144,7 +157,7 @@ def SudokuUnsolver(grid:list[list[int]], limit:int = 48) -> list[list[int]]:
             limit = int(input("Enter the limit: "))
         else:
             break
-    grid = deepcopy(grid) #Preserving the original grid in memory
+    grid = GridPreserver(grid) #Preserving the original grid in memory
     removedNumsCount = 0
     while removedNumsCount < limit:
         xAxis = random.randint(0,8)
@@ -219,32 +232,16 @@ def GridInputChecker(indexType:str) -> int:
     debugging purposes. It is designed to intentionally crash the program in order
     to notify me or future developers of a hidden coding/logical error.
     """
-    indexType = indexType.upper()
-    if indexType == "ROW":
+    indexType = indexType.lower()
+    if indexType == "row" or indexType == "column":
         while True:
             try:
-                index = int(input("Enter the row number: R"))
+                index = int(input(f"Enter the {indexType} number: {indexType[0].upper()}"))
                 assert index >= 1
                 assert index <= 9
             except AssertionError:
-                print("Assertion Error!")
-                print("You must enter an integer between 1 and 9")
-            except TypeError:
-                print("Type Error!")
-                print("You must enter an integer between 1 and 9")
-            except ValueError:
-                print("Value Error!")
-                print("You must enter an integer between 1 and 9")
-            else:
-                break
-        index -= 1 #Converting grid index to python list index
-    elif indexType == "COLUMN":
-        while True:
-            try:
-                index = int(input("Enter the column number: C"))
-                assert index >= 1
-                assert index <= 9
-            except AssertionError:
+                if index == 0: #User choosing to cancel the input
+                    break
                 print("Assertion Error!")
                 print("You must enter an integer between 1 and 9")
             except TypeError:
@@ -277,6 +274,19 @@ def AnswerChecker(ans:int, rowIndex:int, colIndex:int, solvedGrid:list[list[int]
         return False, mistakeCount
 
 def AnsInputChecker(rowIndex:int, colIndex:int, solvedGrid: list[list[int]], mistakes:int) -> tuple[bool,int]:
+    """
+    Any cell in the grid is stored in a nested list. Accesing that cell is done via
+    grid[rowIndex][colIndex]. This function does two things. It makes sure that the
+    user input is valid then it passes the number on to AnswerChecker() to check if
+    the input's correctness.
+
+    Validity: The user input is an acceptable input in a sudoku grid. The only
+    acceptable inputs are integers from 1 to 9.
+
+    Correctness: The number inputed by the user MUST match the grid in solvedGrid.
+    Sometimes there is more than one possible correct grid solution but due to a
+    limitation of this algorithm only one solution is counted as true.
+    """
     statement = """Enter the number you would like to input into the selected cell"""
     if rowIndex == -1 or colIndex == -1: #User choosing to cancel the input
         return 0, mistakes
